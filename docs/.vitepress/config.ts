@@ -285,7 +285,7 @@ export default defineConfig({
     nav: [
       { text: 'Home', link: '/' },
       { text: 'Guide', link: '/introduction/welcome', activeMatch: '^/(introduction|part-)' },
-      { text: 'Examples', link: 'https://github.com/programmersd21/the_quickshell_book/tree/main/examples' },
+      { text: 'Examples', link: 'https://github.com/programmersd21/the_quickshell_book/tree/master/examples' },
     ],
 
     sidebar: {
@@ -302,7 +302,7 @@ export default defineConfig({
     },
 
     editLink: {
-      pattern: 'https://github.com/programmersd21/the_quickshell_book/edit/main/docs/:path',
+      pattern: 'https://github.com/programmersd21/the_quickshell_book/edit/master/docs/:path',
       text: 'Edit this page on GitHub',
     },
 
