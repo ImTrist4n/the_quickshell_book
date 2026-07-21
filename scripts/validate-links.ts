@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs'
-import { globSync } from 'fast-glob'
+import fg from 'fast-glob'
+const { globSync } = fg
 import { join, dirname, relative } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
