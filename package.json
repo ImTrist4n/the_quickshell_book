@@ -1,0 +1,29 @@
+{
+  "name": "the_quickshell_book",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A comprehensive guide to building desktop shells with Quickshell and QML",
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "type": "module",
+  "scripts": {
+    "dev": "vitepress dev docs",
+    "build": "vitepress build docs",
+    "preview": "vitepress preview docs",
+    "new:chapter": "tsx scripts/new-chapter.ts",
+    "validate:links": "tsx scripts/validate-links.ts"
+  },
+  "dependencies": {
+    "vitepress": "^1.6.3"
+  },
+  "devDependencies": {
+    "vitepress-mermaid-renderer": "^1.1.27",
+    "mermaid": "^11.6.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0",
+    "playwright": "^1.49.0",
+    "gray-matter": "^4.0.3",
+    "fast-glob": "^3.3.2"
+  }
+}

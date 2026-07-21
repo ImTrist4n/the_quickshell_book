@@ -1,0 +1,17 @@
+node_modules
+docs/.vitepress/dist
+docs/.vitepress/cache
+*.log
+.DS_Store
+Thumbs.db
+*.swo
+*.swp
+*.swn
+.vscode
+.idea
+*.iml
+dist
+build
+.env
+.env.local
+*.tsbuildinfo
