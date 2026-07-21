@@ -265,6 +265,7 @@ export default defineConfig({
   lang: 'en-US',
   title: 'The Quickshell Book',
   description: 'A comprehensive guide to building desktop shells with Quickshell and QML',
+  base: '/the_quickshell_book/',
   srcDir: '.',
 
   cleanUrls: true,
