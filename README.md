@@ -1,5 +1,7 @@
 # The Quickshell Book
 
+![Preview](preview/image.png)
+
 A comprehensive guide to building Wayland desktop shells with Quickshell and QML.
 
 ## Quick Start
