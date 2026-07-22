@@ -1,4 +1,5 @@
 import { ref } from 'vue'
+import type { ChunkItem } from './useArticleText'
 
 export interface PuterVoice {
   id: string
@@ -32,12 +33,11 @@ export function usePuterTTS() {
     prefetchMap.clear()
   }
 
-  const fetchPuterChunk = (chunkIndex: number, chunks: string[]): Promise<HTMLAudioElement | null> => {
+  const fetchPuterChunk = (chunkIndex: number, chunks: ChunkItem[]): Promise<HTMLAudioElement | null> => {
     if (chunkIndex < 0 || chunkIndex >= chunks.length) {
       return Promise.resolve(null)
     }
 
-    // Optimized memory key: voice:index
     const cacheKey = `${selectedPuterVoice.value}:${chunkIndex}`
 
     if (audioCache.has(cacheKey)) {
@@ -53,7 +53,7 @@ export function usePuterTTS() {
         const puterModule = await import('@heyputer/puter.js')
         const puter = puterModule.default || puterModule.puter || puterModule
 
-        const audio = await puter.ai.txt2speech(chunks[chunkIndex], {
+        const audio = await puter.ai.txt2speech(chunks[chunkIndex].text, {
           provider: 'openai',
           model: 'tts-1',
           voice: selectedPuterVoice.value,

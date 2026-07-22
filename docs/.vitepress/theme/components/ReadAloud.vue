@@ -295,3 +295,22 @@ const {
   }
 }
 </style>
+
+<style>
+/* Global text highlighting styling for currently read DOM element */
+.read-aloud-highlight {
+  background-color: #fef08a !important;
+  color: #0f172a !important;
+  border-radius: 6px;
+  padding: 2px 6px;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0 0 0 2px #fde047, 0 4px 6px -1px rgba(234, 179, 8, 0.2);
+}
+
+.dark .read-aloud-highlight {
+  background-color: rgba(234, 179, 8, 0.3) !important;
+  color: #fef9c3 !important;
+  border-radius: 6px;
+  box-shadow: 0 0 0 2px rgba(234, 179, 8, 0.5), 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+}
+</style>

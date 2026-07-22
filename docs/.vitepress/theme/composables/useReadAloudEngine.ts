@@ -1,12 +1,12 @@
 import { ref, watch, onUnmounted, computed } from 'vue'
 import { useRoute } from 'vitepress'
-import { useArticleText } from './useArticleText'
+import { useArticleText, type ChunkItem } from './useArticleText'
 import { useBrowserTTS } from './useBrowserTTS'
 import { usePuterTTS } from './usePuterTTS'
 
 export function useReadAloudEngine() {
   const route = useRoute()
-  const { getArticleText, splitIntoChunks } = useArticleText()
+  const { getArticleChunks, highlightElement, clearHighlight } = useArticleText()
   const browserTTS = useBrowserTTS()
   const puterTTS = usePuterTTS()
 
@@ -18,11 +18,9 @@ export function useReadAloudEngine() {
   const currentRate = ref(1.0)
   const rates = [0.8, 1.0, 1.25, 1.5, 2.0]
 
-  const chunks = ref<string[]>([])
+  const chunks = ref<ChunkItem[]>([])
   const currentChunkIndex = ref(0)
 
-  // Decoupled support check: Puter TTS works keylessly in any browser with internet;
-  // Component is supported if either Puter AI is available or Browser Speech API is available.
   const isSupported = computed(() => true)
 
   const stopSpeech = () => {
@@ -33,6 +31,7 @@ export function useReadAloudEngine() {
     currentChunkIndex.value = 0
     chunks.value = []
 
+    clearHighlight()
     puterTTS.stopPuterAudio()
     browserTTS.stopBrowserTTS()
   }
@@ -44,6 +43,10 @@ export function useReadAloudEngine() {
     }
 
     const idx = currentChunkIndex.value
+    const currentChunk = chunks.value[idx]
+
+    // Highlight active DOM element in yellow
+    highlightElement(currentChunk ? currentChunk.element : null)
 
     if (!puterTTS.isPuterChunkCached(idx)) {
       isLoadingModel.value = true
@@ -56,7 +59,6 @@ export function useReadAloudEngine() {
       isLoadingModel.value = false
       loadingProgress.value = ''
       if (!audio) {
-        // Fallback to browser TTS if Puter AI fails
         if (browserTTS.isBrowserSupported.value) {
           ttsMode.value = 'browser'
           speakNextBrowserChunk()
@@ -99,10 +101,13 @@ export function useReadAloudEngine() {
     }
 
     const idx = currentChunkIndex.value
-    const text = chunks.value[idx]
+    const currentChunk = chunks.value[idx]
+
+    // Highlight active DOM element in yellow
+    highlightElement(currentChunk ? currentChunk.element : null)
 
     browserTTS.speakBrowserChunk(
-      text,
+      currentChunk.text,
       currentRate.value,
       () => {
         isPlaying.value = true
@@ -125,7 +130,7 @@ export function useReadAloudEngine() {
 
   const togglePlayPause = async () => {
     if (isPlaying.value && !isPaused.value) {
-      // Pause
+      // Pause: Keep highlight visible on current element
       isPaused.value = true
       if (ttsMode.value === 'browser') {
         browserTTS.stopBrowserTTS()
@@ -149,12 +154,12 @@ export function useReadAloudEngine() {
       return
     }
 
-    // Start new speech
+    // Start fresh
     stopSpeech()
-    const fullText = getArticleText()
-    if (!fullText) return
+    const articleChunks = getArticleChunks()
+    if (!articleChunks || articleChunks.length === 0) return
 
-    chunks.value = splitIntoChunks(fullText)
+    chunks.value = articleChunks
     currentChunkIndex.value = 0
     isPlaying.value = true
     isPaused.value = false
