@@ -33,6 +33,7 @@ cd ~/quickshell-playground/first-launch
 Now create `shell.qml`:
 
 ```qml
+import QtQuick
 import Quickshell
 
 PanelWindow {
@@ -61,6 +62,7 @@ A small dark panel should appear at the top of your screen with the text "Quicks
 
 Let's break down what each line does:
 
+- `import QtQuick` — provides the standard QML UI types, such as `Text`.
 - `import Quickshell` — makes Quickshell's types available. Without this, `PanelWindow` wouldn't be recognized.
 - `PanelWindow { ... }` — creates a window using the Layer Shell protocol, positioned at the top layer. `PanelWindow` is the primary window type for bars and panels.
 - `width: 400; height: 48` — the window is 400 by 48 pixels.
@@ -74,6 +76,7 @@ Let's break down what each line does:
 Let's add a few more elements to see how the panel responds:
 
 ```qml
+import QtQuick
 import Quickshell
 
 PanelWindow {
@@ -128,7 +131,7 @@ Save and see the hot reload in action. The panel now has a workspace indicator o
 When you ran `quickshell ./`, the following occurred:
 
 1. Quickshell scanned the directory for `shell.qml`
-2. It loaded the QML file and resolved the `import Quickshell` statement
+2. It loaded the QML file and resolved the `QtQuick` and `Quickshell` imports.
 3. It created a `PanelWindow` — this involved:
    - Opening a Wayland connection
    - Creating a `wlr-layer-shell` surface
