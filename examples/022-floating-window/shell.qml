@@ -1,18 +1,19 @@
-import Quickshell
-import Quickshell.Window
 import QtQuick
+import Quickshell
 
 ShellRoot {
-  FloatingWindow {
-    title: "Floating Window"
-    width: 400
-    height: 300
-    color: "#1e1e2e"
+    FloatingWindow {
+        title: "Floating Window"
+        implicitWidth: 400
+        implicitHeight: 300
+        color: "#1e1e2e"
 
-    Text {
-      anchors.centerIn: parent
-      color: "#cdd6f4"
-      text: "I float freely"
+        Text {
+            anchors.centerIn: parent
+            color: "#cdd6f4"
+            text: "I float freely"
+        }
+
     }
-  }
+
 }

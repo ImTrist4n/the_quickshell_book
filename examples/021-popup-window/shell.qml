@@ -1,62 +1,87 @@
-import Quickshell
-import Quickshell.Window
 import QtQuick
+import Quickshell
 
 ShellRoot {
-  PanelWindow {
-    id: panel
-    anchors {
-      top: true
-      left: true
-      right: true
-    }
-    height: 48
-    color: "#1e1e2e"
+    PanelWindow {
+        id: panel
 
-    Rectangle {
-      id: button
-      anchors.centerIn: parent
-      width: 120
-      height: 32
-      radius: 6
-      color: "#313244"
+        implicitHeight: 48
+        color: "#1e1e2e"
 
-      Text {
-        anchors.centerIn: parent
-        color: "#cdd6f4"
-        text: "Click for popup"
-      }
-
-      MouseArea {
-        anchors.fill: parent
-        onClicked: popup.visible = !popup.visible
-      }
-    }
-
-    PopupWindow {
-      id: popup
-      width: 200
-      height: 150
-      color: "#1e1e2e"
-      visible: false
-
-      property var anchor: Qt.point(
-        panel.x + button.x + button.width / 2 - width / 2,
-        panel.y + panel.height
-      )
-
-      Column {
         anchors {
-          top: parent.top
-          topMargin: 8
-          horizontalCenter: parent.horizontalCenter
+            top: true
+            left: true
+            right: true
         }
-        spacing: 8
 
-        Text { color: "#cdd6f4"; text: "Item 1" }
-        Text { color: "#cdd6f4"; text: "Item 2" }
-        Text { color: "#cdd6f4"; text: "Item 3" }
-      }
+        Rectangle {
+            id: button
+
+            anchors.centerIn: parent
+            width: 120
+            height: 32
+            radius: 6
+            color: "#313244"
+
+            Text {
+                anchors.centerIn: parent
+                color: "#cdd6f4"
+                text: "Click for popup"
+            }
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: popup.visible = !popup.visible
+            }
+
+        }
+
+        PopupWindow {
+            id: popup
+
+            implicitWidth: 200
+            implicitHeight: 150
+            color: "#1e1e2e"
+            visible: false
+
+            anchor {
+                window: panel
+                rect.x: button.x
+                rect.y: button.y
+                rect.width: button.width
+                rect.height: button.height
+                edges: Edges.Bottom
+                gravity: Edges.Bottom
+            }
+
+            Column {
+                spacing: 8
+
+                anchors {
+                    top: parent.top
+                    topMargin: 8
+                    horizontalCenter: parent.horizontalCenter
+                }
+
+                Text {
+                    color: "#cdd6f4"
+                    text: "Item 1"
+                }
+
+                Text {
+                    color: "#cdd6f4"
+                    text: "Item 2"
+                }
+
+                Text {
+                    color: "#cdd6f4"
+                    text: "Item 3"
+                }
+
+            }
+
+        }
+
     }
-  }
+
 }

@@ -1,26 +1,45 @@
-import Quickshell.Window
 import QtQuick
+import Quickshell
 
 PanelWindow {
-  anchors {
-    top: true
-    left: true
-    right: true
-  }
-  height: Theme.panelHeight
-  color: Theme.bgColor
+    implicitHeight: Theme.panelHeight
+    color: Theme.bgColor
 
-  Row {
     anchors {
-      left: parent.left
-      leftMargin: 12
-      verticalCenter: parent.verticalCenter
+        top: true
+        left: true
+        right: true
     }
-    spacing: 16
 
-    Text { color: Theme.accent; text: " Launcher" }
-    Text { color: Theme.fgColor; text: " Terminal" }
-    Item { width: 1; height: 1 }
-    Text { color: Theme.fgColor; text: " 12:00" }
-  }
+    Row {
+        spacing: 16
+
+        anchors {
+            left: parent.left
+            leftMargin: 12
+            verticalCenter: parent.verticalCenter
+        }
+
+        Text {
+            color: Theme.accent
+            text: " Launcher"
+        }
+
+        Text {
+            color: Theme.fgColor
+            text: " Terminal"
+        }
+
+        Item {
+            width: 1
+            height: 1
+        }
+
+        Text {
+            color: Theme.fgColor
+            text: " 12:00"
+        }
+
+    }
+
 }
