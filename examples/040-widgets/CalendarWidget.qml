@@ -14,22 +14,17 @@ import QtQuick.Layouts
 Item {
     id: root
 
-    /*! The date used to determine the displayed month and year. */
+    //! The date used to determine the displayed month and year.
     property date date: new Date()
-
-    /*! The first day of the displayed month. */
+    //! The first day of the displayed month.
     readonly property date monthStart: new Date(date.getFullYear(), date.getMonth(), 1)
-
-    /*! The last day of the displayed month. */
+    //! The last day of the displayed month.
     readonly property date monthEnd: new Date(date.getFullYear(), date.getMonth() + 1, 0)
-
-    /*! Number of days in the month. */
+    //! Number of days in the month.
     readonly property int daysInMonth: monthEnd.getDate()
-
-    /*! Weekday of the first day (0=Sun .. 6=Sat). */
+    //! Weekday of the first day (0=Sun .. 6=Sat).
     readonly property int startDayOfWeek: monthStart.getDay()
-
-    /*! Total cells needed to fill the grid (leading blanks + days). */
+    //! Total cells needed to fill the grid (leading blanks + days).
     readonly property int totalCells: startDayOfWeek + daysInMonth
 
     implicitWidth: calendarColumn.implicitWidth
@@ -37,13 +32,13 @@ Item {
 
     ColumnLayout {
         id: calendarColumn
+
         anchors.centerIn: parent
         spacing: 4
 
         Text {
             text: {
-                var months = ["January","February","March","April","May","June",
-                              "July","August","September","October","November","December"];
+                var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
                 return months[root.date.getMonth()] + " " + root.date.getFullYear();
             }
             color: "#cdd6f4"
@@ -63,7 +58,7 @@ Item {
                 model: 7
 
                 Text {
-                    text: ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][model.index]
+                    text: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][model.index]
                     color: "#585b70"
                     font.pixelSize: 10
                     font.bold: true
@@ -72,6 +67,7 @@ Item {
                     width: 28
                     height: 20
                 }
+
             }
 
             Repeater {
@@ -88,20 +84,20 @@ Item {
                             return (day >= 1 && day <= root.daysInMonth) ? day : "";
                         }
                         color: {
-                            if (text === "") return "transparent";
+                            if (text === "")
+                                return "transparent";
+
                             var today = new Date();
-                            var isToday = root.date.getFullYear() === today.getFullYear()
-                                       && root.date.getMonth() === today.getMonth()
-                                       && parseInt(text) === today.getDate();
+                            var isToday = root.date.getFullYear() === today.getFullYear() && root.date.getMonth() === today.getMonth() && parseInt(text) === today.getDate();
                             return isToday ? "#f38ba8" : "#cdd6f4";
                         }
                         font.pixelSize: 11
                         font.bold: {
-                            if (text === "") return false;
+                            if (text === "")
+                                return false;
+
                             var today = new Date();
-                            return root.date.getFullYear() === today.getFullYear()
-                                && root.date.getMonth() === today.getMonth()
-                                && parseInt(text) === today.getDate();
+                            return root.date.getFullYear() === today.getFullYear() && root.date.getMonth() === today.getMonth() && parseInt(text) === today.getDate();
                         }
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
@@ -115,9 +111,15 @@ Item {
                             border.width: parent.text !== "" && parent.font.bold ? 1 : 0
                             visible: parent.font.bold
                         }
+
                     }
+
                 }
+
             }
+
         }
+
     }
+
 }

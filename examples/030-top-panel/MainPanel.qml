@@ -1,41 +1,49 @@
-import Quickshell.Window
 import QtQuick
+import Quickshell
 
 PanelWindow {
-  id: panel
-  anchors {
-    top: true
-    left: true
-    right: true
-  }
-  height: 48
-  color: "#1e1e2e"
-  exclusiveZone: 48
+    id: panel
 
-  Row {
+    implicitHeight: 48
+    color: "#1e1e2e"
+    exclusiveZone: 48
+
     anchors {
-      left: parent.left
-      leftMargin: 12
-      verticalCenter: parent.verticalCenter
+        top: true
+        left: true
+        right: true
     }
-    spacing: 12
 
-    LauncherButton { iconText: "" }
+    Row {
+        spacing: 12
 
-    WorkspaceDots {
-      currentWorkspace: 0
-      workspaceCount: 5
+        anchors {
+            left: parent.left
+            leftMargin: 12
+            verticalCenter: parent.verticalCenter
+        }
+
+        LauncherButton {
+            iconText: ""
+        }
+
+        WorkspaceDots {
+        }
+
     }
-  }
 
-  Row {
-    anchors {
-      right: parent.right
-      rightMargin: 12
-      verticalCenter: parent.verticalCenter
+    Row {
+        spacing: 12
+
+        anchors {
+            right: parent.right
+            rightMargin: 12
+            verticalCenter: parent.verticalCenter
+        }
+
+        ClockWidget {
+        }
+
     }
-    spacing: 12
 
-    ClockWidget { }
-  }
 }

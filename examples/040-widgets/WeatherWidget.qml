@@ -13,13 +13,11 @@ import QtQuick.Layouts
 Item {
     id: root
 
-    /*! City name. */
+    //! City name.
     property string city: ""
-
-    /*! Temperature string (e.g. "24°C"). */
+    //! Temperature string (e.g. "24°C").
     property string temperature: ""
-
-    /*! Weather condition description (e.g. "Partly Cloudy"). */
+    //! Weather condition description (e.g. "Partly Cloudy").
     property string condition: ""
 
     implicitWidth: weatherColumn.implicitWidth
@@ -27,6 +25,7 @@ Item {
 
     ColumnLayout {
         id: weatherColumn
+
         anchors.centerIn: parent
         spacing: 1
 
@@ -55,5 +54,7 @@ Item {
             horizontalAlignment: Text.AlignHCenter
             Layout.fillWidth: true
         }
+
     }
+
 }

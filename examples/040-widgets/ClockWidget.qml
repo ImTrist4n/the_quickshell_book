@@ -13,13 +13,11 @@ import QtQuick.Layouts
 Item {
     id: root
 
-    /*! The current time as a formatted string (HH:mm:ss). */
+    //! The current time as a formatted string (HH:mm:ss).
     readonly property string timeString: new Date().toLocaleTimeString(Qt.locale(), "HH:mm:ss")
-
-    /*! The current date as a formatted string. */
+    //! The current date as a formatted string.
     readonly property string dateString: new Date().toLocaleDateString(Qt.locale(), "ddd MMM d yyyy")
-
-    /*! Whether the date label is visible. */
+    //! Whether the date label is visible.
     property bool showDate: false
 
     implicitWidth: clockLayout.implicitWidth
@@ -27,11 +25,13 @@ Item {
 
     ColumnLayout {
         id: clockLayout
+
         anchors.centerIn: parent
         spacing: 2
 
         Text {
             id: timeText
+
             text: root.timeString
             color: "#cdd6f4"
             font.pixelSize: 14
@@ -42,6 +42,7 @@ Item {
 
         Text {
             id: dateText
+
             text: root.dateString
             color: "#89b4fa"
             font.pixelSize: 11
@@ -49,6 +50,7 @@ Item {
             visible: root.showDate
             Layout.fillWidth: true
         }
+
     }
 
     MouseArea {
@@ -65,4 +67,5 @@ Item {
             dateText.text = root.dateString;
         }
     }
+
 }

@@ -14,7 +14,7 @@ import QtQuick.Layouts
 Item {
     id: root
 
-    /*! Number of placeholder tray items to display. */
+    //! Number of placeholder tray items to display.
     property int trayItemCount: 4
 
     implicitWidth: trayRow.implicitWidth
@@ -22,6 +22,7 @@ Item {
 
     Row {
         id: trayRow
+
         anchors.centerIn: parent
         spacing: 6
 
@@ -33,8 +34,7 @@ Item {
                 height: 12
                 radius: 6
                 color: {
-                    var colors = ["#89b4fa", "#a6e3a1", "#f9e2af", "#f38ba8",
-                                  "#cba6f7", "#94e2d5", "#fab387", "#74c7ec"];
+                    var colors = ["#89b4fa", "#a6e3a1", "#f9e2af", "#f38ba8", "#cba6f7", "#94e2d5", "#fab387", "#74c7ec"];
                     return colors[index % colors.length];
                 }
 
@@ -42,9 +42,13 @@ Item {
                     anchors.fill: parent
                     hoverEnabled: true
                     onEntered: parent.opacity = 0.6
-                    onExited: parent.opacity = 1.0
+                    onExited: parent.opacity = 1
                 }
+
             }
+
         }
+
     }
+
 }

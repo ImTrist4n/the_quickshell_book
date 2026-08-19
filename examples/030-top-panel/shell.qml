@@ -1,19 +1,14 @@
-import Quickshell
-import Quickshell.Window
 import QtQuick
+import Quickshell
 
 ShellRoot {
-  // Spawn a MainPanel on every connected screen
-  Instantiator {
-    model: Quickshell.screens
+    // Spawn a MainPanel on every connected screen
+    Instantiator {
+        model: Quickshell.screens
 
-    MainPanel {
-      screen: VariantList {
-        Variant {
-          screen: modelData
-          value: modelData
+        MainPanel {
         }
-      }
+
     }
-  }
+
 }

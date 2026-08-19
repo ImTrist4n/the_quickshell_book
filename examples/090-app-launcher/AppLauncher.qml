@@ -1,150 +1,188 @@
-import Quickshell
-import Quickshell.Window
 import QtQuick
-import QtQuick.Controls
 import QtQuick.Layouts
+import Quickshell
+import Quickshell.Io
+import Quickshell.Wayland
 
-PopupWindow {
-  id: root
+PanelWindow {
+    id: root
 
-  width: 500
-  height: 400
-  backgroundColor: "#1e1e2e"
-  color: "#1e1e2e"
+    property var appsList: [{
+        "name": "Firefox",
+        "exec": "firefox",
+        "icon": "󰈹"
+    }, {
+        "name": "Terminal",
+        "exec": "kitty",
+        "icon": "󰞷"
+    }, {
+        "name": "Code",
+        "exec": "vscodium",
+        "icon": "󰨞"
+    }, {
+        "name": "Files",
+        "exec": "nautilus",
+        "icon": "󰉋"
+    }, {
+        "name": "Settings",
+        "exec": "gnome-control-center",
+        "icon": "󰒓"
+    }, {
+        "name": "Calculator",
+        "exec": "qalculate-gtk",
+        "icon": "󰪚"
+    }]
+    property string filterQuery: searchInput.text.toLowerCase()
+    property var filteredApps: appsList.filter((app) => {
+        return app.name.toLowerCase().includes(filterQuery);
+    })
 
-  property ListModel allApps: ListModel {
-    ListElement { name: "Firefox"; exec: "firefox"; icon: "firefox" }
-    ListElement { name: "Terminal"; exec: "kitty"; icon: "terminal" }
-    ListElement { name: "Code"; exec: "code"; icon: "code" }
-    ListElement { name: "Files"; exec: "nautilus"; icon: "folder" }
-    ListElement { name: "Settings"; exec: "gnome-control-center"; icon: "settings" }
-    ListElement { name: "Calculator"; exec: "qalculate-gtk"; icon: "calculator" }
-    ListElement { name: "Calendar"; exec: "gnome-calendar"; icon: "calendar" }
-    ListElement { name: "Music"; exec: "spotify"; icon: "spotify" }
-    ListElement { name: "Clock"; exec: "gnome-clocks"; icon: "clock" }
-    ListElement { name: "System Monitor"; exec: "gnome-system-monitor"; icon: "system-monitor" }
-  }
-
-  property string searchText: ""
-  property var filteredApps: []
-
-  function filterApps() {
-    if (root.searchText === "") {
-      root.filteredApps = [];
-      for (let i = 0; i < root.allApps.count; i++)
-        root.filteredApps.push(root.allApps.get(i));
-    } else {
-      root.filteredApps = [];
-      for (let i = 0; i < root.allApps.count; i++) {
-        let app = root.allApps.get(i);
-        if (app.name.toLowerCase().includes(root.searchText.toLowerCase()))
-          root.filteredApps.push(app);
-      }
+    function launchCurrent() {
+        if (filteredApps.length > 0 && appListView.currentIndex >= 0) {
+            let app = filteredApps[appListView.currentIndex];
+            appProcess.command = ["bash", "-c", app.exec];
+            appProcess.running = true;
+            root.visible = false;
+        }
     }
-    appListView.currentIndex = 0;
-  }
 
-  function launchSelected() {
-    if (root.filteredApps.length === 0) return;
-    let app = root.filteredApps[appListView.currentIndex];
-    Process.exec("bash", ["-c", app.exec]);
-    root.visible = false;
-  }
+    implicitWidth: 500
+    implicitHeight: 400
+    color: "transparent"
+    visible: true
+    WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
+    Component.onCompleted: searchInput.forceActiveFocus()
 
-  Shortcut {
-    sequence: "Escape"
-    onActivated: root.visible = false
-  }
+    anchors {
+        top: false
+        bottom: false
+        left: false
+        right: false
+    }
 
-  Shortcut {
-    sequence: "Return"
-    onActivated: root.launchSelected()
-  }
+    Process {
+        id: appProcess
+    }
 
-  ColumnLayout {
-    anchors.fill: parent
-    anchors.margins: 12
-    spacing: 8
+    Shortcut {
+        sequence: "Escape"
+        onActivated: root.visible = false
+    }
+
+    Shortcut {
+        sequence: "Return"
+        onActivated: root.launchCurrent()
+    }
 
     Rectangle {
-      Layout.fillWidth: true
-      height: 40
-      radius: 8
-      color: "#313244"
-
-      TextField {
-        id: searchField
         anchors.fill: parent
-        anchors.margins: 4
-        placeholderText: "Search applications..."
-        placeholderTextColor: "#6c7086"
-        color: "#cdd6f4"
-        font.pixelSize: 14
-        background: null
+        color: "#1e1e2e"
+        radius: 12
+        border.color: "#313244"
+        border.width: 1
 
-        Keys.onDownPressed: appListView.incrementCurrentIndex()
-        Keys.onUpPressed: appListView.decrementCurrentIndex()
+        ColumnLayout {
+            anchors.fill: parent
+            anchors.margins: 12
+            spacing: 10
 
-        onTextChanged: {
-          root.searchText = text;
-          root.filterApps();
+            // Barre de recherche
+            Rectangle {
+                Layout.fillWidth: true
+                Layout.preferredHeight: 42
+                color: "#313244"
+                radius: 8
+
+                RowLayout {
+                    anchors.fill: parent
+                    anchors.leftMargin: 12
+                    anchors.rightMargin: 12
+                    spacing: 8
+
+                    Text {
+                        text: "󰍉"
+                        color: "#89b4fa"
+                        font.pixelSize: 16
+                    }
+
+                    TextInput {
+                        id: searchInput
+
+                        Layout.fillWidth: true
+                        color: "#cdd6f4"
+                        font.pixelSize: 15
+                        clip: true
+                        focus: true
+                        onTextChanged: appListView.currentIndex = 0
+                        Keys.onDownPressed: appListView.incrementCurrentIndex()
+                        Keys.onUpPressed: appListView.decrementCurrentIndex()
+
+                        Text {
+                            text: "Search applications..."
+                            color: "#6c7086"
+                            font.pixelSize: 15
+                            visible: searchInput.text === ""
+                        }
+
+                    }
+
+                }
+
+            }
+
+            ListView {
+                id: appListView
+
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                clip: true
+                model: root.filteredApps
+                currentIndex: 0
+
+                delegate: Rectangle {
+                    required property var modelData
+                    required property int index
+
+                    width: appListView.width
+                    height: 42
+                    radius: 6
+                    color: index === appListView.currentIndex ? "#45475a" : "transparent"
+
+                    RowLayout {
+                        anchors.fill: parent
+                        anchors.leftMargin: 12
+                        anchors.rightMargin: 12
+                        spacing: 12
+
+                        Text {
+                            text: modelData.icon
+                            font.pixelSize: 18
+                            color: "#89b4fa"
+                        }
+
+                        Text {
+                            text: modelData.name
+                            font.pixelSize: 14
+                            color: "#cdd6f4"
+                            Layout.fillWidth: true
+                        }
+
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: {
+                            appListView.currentIndex = index;
+                            root.launchCurrent();
+                        }
+                    }
+
+                }
+
+            }
+
         }
-      }
+
     }
 
-    ListView {
-      id: appListView
-      Layout.fillWidth: true
-      Layout.fillHeight: true
-      clip: true
-      model: root.filteredApps
-      currentIndex: 0
-
-      delegate: Rectangle {
-        width: appListView.width
-        height: 40
-        radius: 6
-        color: ListView.isCurrentItem ? "#45475a" : "transparent"
-
-        RowLayout {
-          anchors.fill: parent
-          anchors.margins: 8
-          spacing: 10
-
-          Text {
-            text: modelData.icon || ""
-            font.pixelSize: 16
-            color: "#89b4fa"
-          }
-
-          Text {
-            text: modelData.name
-            font.pixelSize: 14
-            color: "#cdd6f4"
-            Layout.fillWidth: true
-          }
-
-          Text {
-            text: "↵"
-            font.pixelSize: 12
-            color: "#585b70"
-            visible: ListView.isCurrentItem
-          }
-        }
-
-        MouseArea {
-          anchors.fill: parent
-          onClicked: {
-            appListView.currentIndex = index;
-            root.launchSelected();
-          }
-        }
-      }
-    }
-  }
-
-  Component.onCompleted: {
-    root.filterApps();
-    searchField.forceActiveFocus();
-  }
 }

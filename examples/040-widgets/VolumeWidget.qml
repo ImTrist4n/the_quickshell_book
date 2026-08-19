@@ -13,10 +13,9 @@ import QtQuick.Layouts
 Item {
     id: root
 
-    /*! Volume level from 0 to 100. */
+    //! Volume level from 0 to 100.
     property int volume: 0
-
-    /*! Whether the audio output is muted. */
+    //! Whether the audio output is muted.
     property bool muted: false
 
     implicitWidth: volumeRow.implicitWidth
@@ -24,15 +23,24 @@ Item {
 
     RowLayout {
         id: volumeRow
+
         anchors.centerIn: parent
         spacing: 4
 
         Text {
             text: {
-                if (root.muted) return "\uD83D\uDD07";
-                if (root.volume <= 0) return "\uD83D\uDD07";
-                if (root.volume <= 33) return "\uD83D\uDD08";
-                if (root.volume <= 66) return "\uD83D\uDD09";
+                if (root.muted)
+                    return "\uD83D\uDD07";
+
+                if (root.volume <= 0)
+                    return "\uD83D\uDD07";
+
+                if (root.volume <= 33)
+                    return "\uD83D\uDD08";
+
+                if (root.volume <= 66)
+                    return "\uD83D\uDD09";
+
                 return "\uD83D\uDD0A";
             }
             color: root.muted ? "#f38ba8" : "#cdd6f4"
@@ -44,5 +52,7 @@ Item {
             color: root.muted ? "#585b70" : "#cdd6f4"
             font.pixelSize: 12
         }
+
     }
+
 }
