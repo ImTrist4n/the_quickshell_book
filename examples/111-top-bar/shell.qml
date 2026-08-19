@@ -1,158 +1,178 @@
-import Quickshell
-import Quickshell.Window
 import QtQuick
 import QtQuick.Layouts
+import Quickshell
+import Quickshell.Wayland
 
-// Catppuccin Mocha palette
-pragma Singleton
-QtObject {
-    id: theme
-    property color base: "#1e1e2e"
-    property color text: "#cdd6f4"
-    property color accent: "#89b4fa"
-    property color green: "#a6e3a1"
-    property color red: "#f38ba8"
-    property color yellow: "#f9e2af"
-    property color purple: "#cba6f7"
-    property int slimHeight: 36
-    property int expandedHeight: 48
-    property int spacing: 8
-    property int radius: 6
-}
-
-// Multi-monitor support: one top bar per screen
 ShellRoot {
-    Variants {
-        Quickshell.screens {
-            onScreensChanged: {
-                for (const screen of screens) {
-                    if (!screenComponents[screen.name]) {
-                        var component = Qt.createComponent("shell.qml")
-                        screenComponents[screen.name] = component.createObject(null, {screen: screen})
-                    }
-                }
-            }
-        }
+    id: root
+
+    QtObject {
+        id: theme
+
+        property color base: "#1e1e2e"
+        property color text: "#cdd6f4"
+        property color accent: "#89b4fa"
+        property color green: "#a6e3a1"
+        property color red: "#f38ba8"
+        property color yellow: "#f9e2af"
+        property color purple: "#cba6f7"
+        property int slimHeight: 36
+        property int expandedHeight: 48
+        property int spacing: 8
+        property int radius: 6
     }
 
-    property var screenComponents: ({})
+    Variants {
+        model: Quickshell.screens
 
-    Component {
-        id: panelDelegate
-
-        PanelWindow {
+        delegate: PanelWindow {
             id: panel
-            screen: screen
+
+            required property var modelData
+
+            screen: modelData
+            WlrLayershell.layer: WlrLayer.Top
+            implicitHeight: theme.slimHeight
+            color: theme.base
+
             anchors {
                 top: true
                 left: true
                 right: true
             }
-            height: theme.slimHeight
-            color: theme.base
-            exclusionMode: ExclusionMode.Exclusive
 
-            // Hover-to-expand
             MouseArea {
                 anchors.fill: parent
                 hoverEnabled: true
-                onEntered: panel.height = theme.expandedHeight
-                onExited: panel.height = theme.slimHeight
-                Behavior on height { NumberAnimation { duration: 150 } }
+                onEntered: panel.implicitHeight = theme.expandedHeight
+                onExited: panel.implicitHeight = theme.slimHeight
+
+                Behavior on height {
+                    NumberAnimation {
+                        duration: 150
+                    }
+
+                }
+
             }
 
             RowLayout {
                 anchors.fill: parent
-                anchors.margins: 4
+                anchors.leftMargin: 8
+                anchors.rightMargin: 8
                 spacing: theme.spacing
 
-                // Left section
-                Row {
+                RowLayout {
                     Layout.alignment: Qt.AlignVCenter
                     spacing: theme.spacing
 
-                    WorkspaceIndicator {}
-                    LauncherButton {}
+                    // Workspace Indicator
+                    Rectangle {
+                        implicitWidth: 24
+                        implicitHeight: 24
+                        radius: theme.radius
+                        color: theme.accent
+
+                        Text {
+                            anchors.centerIn: parent
+                            text: "1"
+                            color: theme.base
+                            font.bold: true
+                        }
+
+                    }
+
+                    // Launcher Button
+                    Rectangle {
+                        implicitWidth: 24
+                        implicitHeight: 24
+                        radius: theme.radius
+                        color: theme.purple
+
+                        Text {
+                            anchors.centerIn: parent
+                            text: ""
+                            color: theme.base
+                        }
+
+                    }
+
                 }
 
-                // Center section
-                Item { Layout.fillWidth: true }
+                Item {
+                    Layout.fillWidth: true
+                }
 
-                ClockWidget {
+                Text {
+                    id: clockText
+
                     Layout.alignment: Qt.AlignCenter
+                    text: new Date().toLocaleTimeString(Qt.locale(), "hh:mm")
+                    color: theme.text
+                    font.pixelSize: 14
+
+                    Timer {
+                        interval: 1000
+                        running: true
+                        repeat: true
+                        onTriggered: clockText.text = new Date().toLocaleTimeString(Qt.locale(), "hh:mm")
+                    }
+
                 }
 
-                // Right section
-                Item { Layout.fillWidth: true }
+                Item {
+                    Layout.fillWidth: true
+                }
 
-                Row {
+                RowLayout {
                     Layout.alignment: Qt.AlignVCenter
                     spacing: theme.spacing
 
-                    VolumeIcon {}
-                    BatteryIcon {}
-                    SystemTray {}
+                    // Volume Icon
+                    Rectangle {
+                        implicitWidth: 24
+                        implicitHeight: 24
+                        radius: theme.radius
+                        color: theme.green
+
+                        Text {
+                            anchors.centerIn: parent
+                            text: ""
+                            color: theme.base
+                        }
+
+                    }
+
+                    // Battery Icon
+                    Rectangle {
+                        implicitWidth: 24
+                        implicitHeight: 24
+                        radius: theme.radius
+                        color: theme.yellow
+
+                        Text {
+                            anchors.centerIn: parent
+                            text: ""
+                            color: theme.base
+                        }
+
+                    }
+
+                    // System Tray Placeholder
+                    Rectangle {
+                        implicitWidth: 60
+                        implicitHeight: 24
+                        radius: theme.radius
+                        color: theme.text
+                        opacity: 0.2
+                    }
+
                 }
+
             }
+
         }
+
     }
 
-    // --- Widget stubs ---
-
-    component WorkspaceIndicator: Rectangle {
-        width: 24; height: 24; radius: theme.radius
-        color: theme.accent
-        Text {
-            anchors.centerIn: parent
-            text: "1"
-            color: theme.base
-            font.bold: true
-        }
-    }
-
-    component LauncherButton: Rectangle {
-        width: 24; height: 24; radius: theme.radius
-        color: theme.purple
-        Text {
-            anchors.centerIn: parent
-            text: ""
-            color: theme.base
-        }
-    }
-
-    component ClockWidget: Text {
-        text: new Date().toLocaleTimeString(Qt.locale(), "hh:mm")
-        color: theme.text
-        font.pixelSize: 14
-        Timer {
-            interval: 1000; running: true; repeat: true
-            onTriggered: parent.text = new Date().toLocaleTimeString(Qt.locale(), "hh:mm")
-        }
-    }
-
-    component VolumeIcon: Rectangle {
-        width: 24; height: 24; radius: theme.radius
-        color: theme.green
-        Text {
-            anchors.centerIn: parent
-            text: ""
-            color: theme.base
-        }
-    }
-
-    component BatteryIcon: Rectangle {
-        width: 24; height: 24; radius: theme.radius
-        color: theme.yellow
-        Text {
-            anchors.centerIn: parent
-            text: ""
-            color: theme.base
-        }
-    }
-
-    component SystemTray: Rectangle {
-        width: 60; height: 24; radius: theme.radius
-        color: theme.text
-        opacity: 0.2
-    }
 }
